@@ -1,21 +1,19 @@
 package hello.hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Time;
 
 @Entity
 @Table(name = "my_user")
 public class MyUserInfo {
-    private int userId ;
+    private int  userId ;
     private String userName;
     private String pwd;
     private Time createTime;
 
     @Id
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "user_id", updatable = false, nullable = false)
     public int getUserId() {
         return userId;
     }
@@ -50,6 +48,5 @@ public class MyUserInfo {
     public void setCreateTime(Time createTime) {
         this.createTime = createTime;
     }
-
 
 }

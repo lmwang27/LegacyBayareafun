@@ -5,8 +5,8 @@ public class LoginRequest {
     private  String pwd;
 
     public LoginRequest(String userName, String pwd) {
-        this.userName = userName;
-        this.pwd = pwd;
+        setPwd(pwd);
+        setUserName(userName);
     }
 
     public void setUserName(String userName) {

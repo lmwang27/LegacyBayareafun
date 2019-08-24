@@ -9,4 +9,5 @@ import java.util.List;
 public interface MyUserRepository  extends JpaRepository<MyUserInfo,Integer> {
     List<MyUserInfo> findByUserId(Integer userId);
     List<MyUserInfo> findByUserName(String  userName);
+    boolean deletByUserName(String userName);
 }
