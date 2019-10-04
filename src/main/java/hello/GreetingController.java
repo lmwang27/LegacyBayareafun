@@ -6,11 +6,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.hibernate.MyUserInfo;
 import hello.hibernate.MyUserRepository;
 import org.hibernate.resource.transaction.backend.jta.internal.synchronization.RegisteredSynchronization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 
 @RestController
 public class GreetingController {
@@ -32,7 +36,7 @@ public class GreetingController {
         return "Hello , new springer!";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public LoginResponse login(@RequestBody LoginRequest request){
         String userName = request.getUserName();
         String pwd = request.getPwd();
@@ -52,7 +56,7 @@ public class GreetingController {
 
     }
 
-    @PostMapping("/register")
+    @PostMapping("/user/register")
     public RegisterResponse addNewAccounts(@RequestBody RegisterReuest newUser){
        List<MyUserInfo> user = myUserRepository.findByUserName(newUser.getUserName());
        if(user!=null && !user.isEmpty()){
@@ -64,12 +68,21 @@ public class GreetingController {
        newU.setPwd(newUser.getPwd());
        newU.setCreateTime(Time.valueOf(LocalTime.now()));
 
+        ObjectMapper om = new ObjectMapper();
+        try {
+            System.out.println(om.writeValueAsString(newUser));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(newUser.getPwd());
+
        myUserRepository.save(newU);
        return new RegisterResponse("new acount successfully created.", RegisterResponse.Status.SUCCEEDED);
 
     }
 
-    @PutMapping("/updatePwd")
+    @PutMapping("/user/updatePwd")
     public UpdatePwdResponse updatePwd(@RequestBody UpdatePwdRequest request ){
         String userName = request.getUserName();
         String pwd = request.getPwd();
@@ -83,8 +96,13 @@ public class GreetingController {
             }
         }
         return new UpdatePwdResponse("user doesn't exist", UpdatePwdResponse.Status.FAILED);
-
     }
 
+   /* @PutMapping("/api/trips/{id}")
+    public TripsResponse trips(@PathParam("id") final String tripId, @RequestParam(value="action", defaultValue="start") String action) {
+
+        return new TripsResponse();
+    }
+ */
 
 }
